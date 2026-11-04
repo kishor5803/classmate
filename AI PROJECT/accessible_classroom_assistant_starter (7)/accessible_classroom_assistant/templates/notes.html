@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% block title %}Lecture Notes | Accessible Classroom Assistant{% endblock %}
+{% block content %}
+<section class="page-intro"><p class="eyebrow">LEARNING SUPPORT</p><h1>Lecture notes and revision</h1><p>Paste a transcript or learning material to hear it aloud, create a simple extractive summary, and identify repeated keywords.</p></section>
+<section class="panel">
+  <form method="post">
+    <label for="title">Lecture title</label>
+    <input type="text" id="title" name="title" value="{{ title }}" placeholder="e.g. Introduction to Artificial Intelligence">
+    <label for="lectureContent">Lecture text or notes</label>
+    <textarea id="lectureContent" name="content" class="large-textarea" rows="10" placeholder="Paste lecture text here..." required>{{ content }}</textarea>
+    
+    {% if current_user and current_user.role == 'lecturer' %}
+      <div class="checkbox-row">
+        <label class="checkbox-label" for="is_public">
+          <input type="checkbox" id="is_public" name="is_public" value="1" checked>
+          <span><strong>Publish to entire class</strong> (Students will be able to access and listen to this note)</span>
+        </label>
+      </div>
+    {% endif %}
+
+    <div class="controls">
+      <button class="button primary" type="submit" name="action" value="analyze">Generate summary</button>
+      <button class="button secondary" type="submit" name="action" value="save">
+        {% if current_user and current_user.role == 'lecturer' %}Publish / Save Lecture{% else %}Save My Notes{% endif %}
+      </button>
+      <button class="button secondary" type="button" data-speak-target="lectureContent">Read aloud</button>
+      <button class="button secondary" type="button" id="stopNotesSpeech">Stop audio</button>
+    </div>
+  </form>
+</section>
+{% if summary %}
+<section class="panel results">
+  <p class="eyebrow">REVISION ASSISTANT</p><h2>Summary</h2>
+  <p id="summaryText">{{ summary }}</p>
+  <button class="button secondary" type="button" data-speak-target="summaryText">Listen to summary</button>
+  <h2>Important keywords</h2>
+  <ul class="keyword-list">{% for term in key_terms %}<li>{{ term }}</li>{% endfor %}</ul>
+  <p class="small-note">This prototype uses extractive summarization and word frequency. Check the result for accuracy and completeness.</p>
+</section>
+{% endif %}
+<section class="panel">
+  <h2>Recently saved notes</h2>
+  {% if saved %}
+    <ul class="saved-list">
+    {% for note in saved %}
+      <li>
+        <div>
+          <a href="{{ url_for('saved_note', note_id=note.id) }}"><strong>{{ note.title }}</strong></a>
+          {% if note.role == 'lecturer' %}
+            <span class="role-pill lecturer">👨‍🏫 Lecturer Note</span>
+          {% else %}
+            <span class="role-pill student">🎓 Student Note</span>
+          {% endif %}
+          {% if note.author_name %}
+            <span class="note-author">by {{ note.author_name }}</span>
+          {% endif %}
+        </div>
+        <span>{{ note.created_at[:10] }}</span>
+      </li>
+    {% endfor %}
+    </ul>
+  {% else %}
+    <p>No notes saved yet on this device.</p>
+  {% endif %}
+</section>
+{% endblock %}

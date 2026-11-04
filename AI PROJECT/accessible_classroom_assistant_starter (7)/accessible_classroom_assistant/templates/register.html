@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Register | Accessible Classroom Assistant{% endblock %}
+{% block content %}
+<section class="auth-container">
+  <div class="auth-card panel">
+    <div class="auth-header">
+      <span class="auth-badge">NEW ACCOUNT</span>
+      <h1>Register for Classroom</h1>
+      <p class="auth-subtitle">Join as a Lecturer or Student to access AI assistive features.</p>
+    </div>
+
+    <form method="POST" action="{{ url_for('register') }}" class="auth-form" novalidate>
+      <div>
+        <label for="full_name">Full Name</label>
+        <input type="text" id="full_name" name="full_name" required placeholder="e.g. Dr. Jane Doe or Alex Smith" value="{{ full_name or '' }}">
+      </div>
+
+      <div>
+        <label for="role">Your Role</label>
+        <select id="role" name="role" required>
+          <option value="student" {% if role == 'student' %}selected{% endif %}>🎓 Student (Access lectures, audio, notes & study tools)</option>
+          <option value="lecturer" {% if role == 'lecturer' %}selected{% endif %}>👨‍🏫 Lecturer (Deliver lectures, broadcast captions, publish notes)</option>
+        </select>
+      </div>
+
+      <div>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required autocomplete="username" placeholder="Choose a unique username" value="{{ username or '' }}">
+      </div>
+
+      <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required autocomplete="new-password" placeholder="Minimum 4 characters">
+      </div>
+
+      <button type="submit" class="button primary auth-submit">Complete Registration</button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Already registered? <a href="{{ url_for('login') }}">Sign in here</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}

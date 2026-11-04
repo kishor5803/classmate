@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block title %}Read a Page | Accessible Classroom Assistant{% endblock %}
+{% block content %}
+<section class="page-intro"><p class="eyebrow">OCR DOCUMENT READER</p><h1>Make printed notes accessible</h1><p>Upload a photo or scan of a printed page. The system will try to extract the text so it can be read aloud.</p></section>
+<section class="panel">
+  <form method="post" enctype="multipart/form-data">
+    <label for="document">Choose an image of a page</label>
+    <input type="file" id="document" name="document" accept=".png,.jpg,.jpeg,.bmp,.tif,.tiff" required>
+    <p class="small-note">Maximum 10 MB. Clear, straight, well-lit printed text works best.</p>
+    <button class="button primary" type="submit">Extract text</button>
+  </form>
+</section>
+{% if extracted %}
+<section class="panel">
+  <h2>Extracted text</h2>
+  <label for="ocrText">Review and correct the OCR result before using it.</label>
+  <textarea id="ocrText" class="large-textarea" rows="12">{{ extracted }}</textarea>
+  <div class="controls">
+    <button class="button primary" type="button" data-speak-target="ocrText">Read aloud</button>
+    <button class="button secondary" type="button" id="copyOcr">Copy text</button>
+    <a class="button secondary" href="{{ url_for('notes') }}">Go to lecture notes</a>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

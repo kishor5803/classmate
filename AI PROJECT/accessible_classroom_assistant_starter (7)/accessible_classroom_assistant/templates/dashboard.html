@@ -1,0 +1,127 @@
+{% extends "base.html" %}
+{% block title %}Dashboard | Accessible Classroom Assistant{% endblock %}
+{% block content %}
+<section class="dashboard-header panel">
+  <div class="user-greeting">
+    <div class="user-avatar" aria-hidden="true">
+      {% if current_user.role == 'lecturer' %}👨‍🏫{% else %}🎓{% endif %}
+    </div>
+    <div>
+      <span class="role-badge {{ current_user.role }}">
+        {{ current_user.role|capitalize }} Portal
+      </span>
+      <h1>Hello, {{ current_user.full_name }}</h1>
+      <p class="small-note">Signed in as <strong>@{{ current_user.username }}</strong></p>
+    </div>
+  </div>
+  <div class="user-actions">
+    <a href="{{ url_for('notes') }}" class="button primary">📝 Notes Studio</a>
+    <a href="{{ url_for('ocr') }}" class="button secondary">📄 Document OCR</a>
+    <a href="{{ url_for('logout') }}" class="button secondary">Logout</a>
+  </div>
+</section>
+
+{% if current_user.role == 'lecturer' %}
+<!-- LECTURER DASHBOARD -->
+<section class="dashboard-grid">
+  <article class="panel dash-card">
+    <div class="dash-icon">🎙️</div>
+    <h2>Deliver Live Lecture</h2>
+    <p>Activate live speech captions while teaching. Your words are transcribed into text for hearing-impaired learners.</p>
+    <a class="button primary" href="{{ url_for('index') }}#captions">Start Live Captions →</a>
+  </article>
+
+  <article class="panel dash-card">
+    <div class="dash-icon">📢</div>
+    <h2>Publish Lecture Notes</h2>
+    <p>Create lecture transcripts with automatic extractive summaries and key concepts for your students to review.</p>
+    <a class="button primary" href="{{ url_for('notes') }}">Create & Share Notes →</a>
+  </article>
+
+  <article class="panel dash-card">
+    <div class="dash-icon">📸</div>
+    <h2>Digitize Handouts / Board</h2>
+    <p>Scan handouts, whiteboard photos, or textbook pages using OCR to turn them into readable text notes.</p>
+    <a class="button secondary" href="{{ url_for('ocr') }}">Scan New Document →</a>
+  </article>
+</section>
+
+<section class="panel">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">YOUR CLASSROOM REPOSITORY</p>
+      <h2>Recent Notes Shared with Class</h2>
+    </div>
+    <a href="{{ url_for('notes') }}" class="button secondary">Manage All Notes</a>
+  </div>
+  {% if recent_notes %}
+    <ul class="saved-list">
+      {% for note in recent_notes %}
+        <li>
+          <div>
+            <strong><a href="{{ url_for('saved_note', note_id=note.id) }}">{{ note.title }}</a></strong>
+            {% if note.is_public %}<span class="tag-public">Shared with Students</span>{% else %}<span class="tag-private">Private</span>{% endif %}
+          </div>
+          <span>{{ note.created_at[:10] }}</span>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="small-note">No lecture notes published yet. Go to <a href="{{ url_for('notes') }}">Lecture Notes</a> to create your first lesson note.</p>
+  {% endif %}
+</section>
+
+{% else %}
+<!-- STUDENT DASHBOARD -->
+<section class="dashboard-grid">
+  <article class="panel dash-card">
+    <div class="dash-icon">🎧</div>
+    <h2>Listen to Class Notes</h2>
+    <p>Have your lecture notes read aloud using browser Text-to-Speech synthesis with accessible controls.</p>
+    <a class="button primary" href="{{ url_for('notes') }}">Open Audio Notes →</a>
+  </article>
+
+  <article class="panel dash-card">
+    <div class="dash-icon">💬</div>
+    <h2>View Live Lecture Captions</h2>
+    <p>Read real-time transcriptions during the ongoing lecture to keep pace with teacher instructions.</p>
+    <a class="button primary" href="{{ url_for('index') }}#captions">Go to Live Captions →</a>
+  </article>
+
+  <article class="panel dash-card">
+    <div class="dash-icon">📖</div>
+    <h2>Scan Study Material</h2>
+    <p>Upload textbook pages, study guides, or handwritten sheets to extract text and generate summaries.</p>
+    <a class="button secondary" href="{{ url_for('ocr') }}">Scan Study Page →</a>
+  </article>
+</section>
+
+<section class="panel">
+  <div class="section-heading">
+    <div>
+      <p class="eyebrow">AVAILABLE STUDY MATERIALS</p>
+      <h2>Lecturer Notes & Lessons</h2>
+    </div>
+    <a href="{{ url_for('notes') }}" class="button secondary">View All Study Notes</a>
+  </div>
+  {% if recent_notes %}
+    <ul class="saved-list">
+      {% for note in recent_notes %}
+        <li>
+          <div>
+            <strong><a href="{{ url_for('saved_note', note_id=note.id) }}">{{ note.title }}</a></strong>
+            {% if note.author_name %}<span class="tag-author">by {{ note.author_name }}</span>{% endif %}
+          </div>
+          <div>
+            <a href="{{ url_for('saved_note', note_id=note.id) }}" class="button secondary" style="font-size:0.75rem; padding: 0.3rem 0.6rem;">Study Note</a>
+          </div>
+        </li>
+      {% endfor %}
+    </ul>
+  {% else %}
+    <p class="small-note">No class notes available yet. Check back once your lecturer publishes lesson materials.</p>
+  {% endif %}
+</section>
+{% endif %}
+
+{% endblock %}

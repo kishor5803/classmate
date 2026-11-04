@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Login | Accessible Classroom Assistant{% endblock %}
+{% block content %}
+<section class="auth-container">
+  <div class="auth-card panel">
+    <div class="auth-header">
+      <span class="auth-badge">SECURE ACCESS</span>
+      <h1>Welcome Back</h1>
+      <p class="auth-subtitle">Select your role or enter credentials to access your classroom portal.</p>
+    </div>
+
+    <!-- Quick Demo Logins for instant evaluation -->
+    <div class="demo-box">
+      <p class="eyebrow">ONE-CLICK DEMO ACCOUNTS</p>
+      <div class="demo-buttons">
+        <form method="POST" action="{{ url_for('login') }}" style="display:inline;">
+          <input type="hidden" name="demo_role" value="lecturer">
+          <button type="submit" class="button primary demo-btn">
+            👨‍🏫 Login as Lecturer (Prof. Sharma)
+          </button>
+        </form>
+        <form method="POST" action="{{ url_for('login') }}" style="display:inline;">
+          <input type="hidden" name="demo_role" value="student">
+          <button type="submit" class="button secondary demo-btn">
+            🎓 Login as Student (Rahul Kumar)
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="divider"><span>OR ENTER DETAILS</span></div>
+
+    <form method="POST" action="{{ url_for('login') }}" class="auth-form" novalidate>
+      <div>
+        <label for="username">Username</label>
+        <input type="text" id="username" name="username" required autocomplete="username" placeholder="e.g. lecturer or student" value="{{ username or '' }}">
+      </div>
+
+      <div>
+        <label for="password">Password</label>
+        <input type="password" id="password" name="password" required autocomplete="current-password" placeholder="••••••••">
+      </div>
+
+      <button type="submit" class="button primary auth-submit">Sign In to Assistant</button>
+    </form>
+
+    <div class="auth-footer">
+      <p>Need an account? <a href="{{ url_for('register') }}">Create an account here</a></p>
+    </div>
+  </div>
+</section>
+{% endblock %}

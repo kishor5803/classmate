@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Saved Note | Accessible Classroom Assistant{% endblock %}
+{% block content %}
+<section class="page-intro">
+  <p class="eyebrow">
+    {% if note.role == 'lecturer' %}LECTURER LESSON NOTE{% else %}STUDENT REVISION NOTE{% endif %}
+  </p>
+  <h1>{{ note.title }}</h1>
+  <p>
+    {% if note.author_name %}By <strong>{{ note.author_name }}</strong> ({% if note.role == 'lecturer' %}Lecturer{% else %}Student{% endif %}) • {% endif %}
+    Saved {{ note.created_at[:10] }}
+  </p>
+</section>
+<section class="panel">
+  <div id="savedContent" class="saved-content">{{ note.content }}</div>
+  <div class="controls">
+    <button class="button primary" type="button" data-speak-target="savedContent">Read aloud</button>
+    <a class="button secondary" href="{{ url_for('notes') }}">Back to notes</a>
+  </div>
+</section>
+{% endblock %}
