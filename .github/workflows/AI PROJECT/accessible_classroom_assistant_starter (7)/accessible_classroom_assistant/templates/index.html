@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Home | Accessible Classroom Assistant{% endblock %}
+{% block content %}
+<section class="hero">
+  <p class="eyebrow">INCLUSIVE LEARNING • ASSISTIVE AI</p>
+  <h1>Every learner deserves access.</h1>
+  <p class="hero-copy">Turn classroom speech into text, learning materials into audio, and lecture notes into clear revision points.</p>
+  <div class="hero-actions">
+    {% if current_user %}
+      <a class="button primary" href="{{ url_for('dashboard') }}">Go to {{ current_user.role|capitalize }} Dashboard →</a>
+      <a class="button secondary" href="#captions">Live captions</a>
+    {% else %}
+      <a class="button primary" href="{{ url_for('login') }}">Sign In (Lecturer & Student)</a>
+      <a class="button secondary" href="#captions">Start live captions</a>
+      <a class="button secondary" href="{{ url_for('ocr') }}">Read printed notes</a>
+    {% endif %}
+  </div>
+  <p class="small-note">Role-based classroom access: Lecturers broadcast captions & publish notes; Students listen, read & study.</p>
+</section>
+
+<section id="captions" class="panel">
+  <div class="section-heading">
+    <div><p class="eyebrow">FOR DEAF AND HARD-OF-HEARING LEARNERS</p><h2>Live speech captions</h2></div>
+    <span class="status" id="micStatus">Microphone not started</span>
+  </div>
+  <p>Choose a language, allow microphone access, then start recognition. For a classroom demonstration, use a quiet room and speak clearly.</p>
+  <div class="controls">
+    <label for="speechLanguage">Recognition language</label>
+    <select id="speechLanguage">
+      <option value="en-IN">English (India)</option>
+      <option value="en-US">English (US)</option>
+      <option value="kn-IN">Kannada</option>
+      <option value="hi-IN">Hindi</option>
+    </select>
+    <button class="button primary" id="startRecognition">Start captions</button>
+    <button class="button secondary" id="stopRecognition">Stop captions</button>
+    <button class="button secondary" id="clearCaptions">Clear text</button>
+  </div>
+  <div class="caption-box" id="captionOutput" role="log" aria-live="polite" aria-label="Recognized speech">Your recognized speech will appear here.</div>
+  <p class="small-note" id="speechHelp">If speech recognition is unavailable, use the lecture notes page to paste a transcript manually.</p>
+</section>
+
+<section class="feature-grid" aria-label="Project features">
+  <article class="feature-card"><div class="feature-icon" aria-hidden="true">🔊</div><h2>Text to speech</h2><p>Listen to notes using your device's available speech voices.</p><a href="{{ url_for('notes') }}">Open lecture notes →</a></article>
+  <article class="feature-card"><div class="feature-icon" aria-hidden="true">📄</div><h2>OCR page reader</h2><p>Extract text from a clear image of printed notes or a textbook.</p><a href="{{ url_for('ocr') }}">Read a page →</a></article>
+  <article class="feature-card"><div class="feature-icon" aria-hidden="true">📝</div><h2>Summary and keywords</h2><p>Prepare quick revision points from a pasted lecture transcript.</p><a href="{{ url_for('notes') }}">Analyze a lecture →</a></article>
+</section>
+{% endblock %}
